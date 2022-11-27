@@ -8,6 +8,7 @@
                  [io.github.jeremylcfr/clj-nd4j "0.1.0-SNAPSHOT"]
                  [io.github.jeremylcfr/clj-datavec "0.1.0-SNAPSHOT"]
                  [org.deeplearning4j/deeplearning4j-core "1.0.0-M2.1"]]
+  :scm {:name "git" :url "https://github.com/jeremylcfr/clj-dl4j"}
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
   :profiles {:dev {:source-paths ["repl"]}}
