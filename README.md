@@ -21,14 +21,14 @@ This library being under AOT, you might skip the following libraries
 explicit inclusions which are not mandatory to test examples.
 
 ```clojure
-[jeremylcfr/clj-nd4j "0.1.0-SNAPSHOT"]
-[jeremylcfr/clj-datavec "0.1.0-SNAPSHOT"]
+[io.github.jeremylcfr/clj-nd4j "0.1.0-SNAPSHOT"]
+[io.github.jeremylcfr/clj-datavec "0.1.0-SNAPSHOT"]
 ```
 
 Then, include :
 
 ```clojure
-[jeremylcfr/clj-dl4j "0.1.0-SNAPSHOT"]
+[io.github.jeremylcfr/clj-dl4j "0.1.0-SNAPSHOT"]
 ```
 
 You can theoritically use CUDA but I never tested it personnaly. For that, you
