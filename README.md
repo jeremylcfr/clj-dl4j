@@ -1,5 +1,7 @@
 # clj-dl4j
 
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.jeremylcfr/clj-dl4j.svg)](https://clojars.org/io.github.jeremylcfr/clj-dl4j)
+
 A clojure wrapper around DL4J, a well-known Java ML library built
 upon ND4J (the "Java NumPy") and JavaCPP.
 
