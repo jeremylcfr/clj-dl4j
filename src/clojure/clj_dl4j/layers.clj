@@ -3,7 +3,9 @@
                              [dense :as dense]
                              [dropout :as dropout]
                              [loss :as loss]
-                             [output :as output]])
+                             [lstm :as lstm]
+                             [output :as output]]
+            [clj-dl4j.layers.lstm :as lstm])
   (:import [org.deeplearning4j.nn.conf.layers Layer]))
 
 (def layer-fns
@@ -15,6 +17,7 @@
    :dense                       dense/->dense-layer
    :dropout                     dropout/->dropout-layer
    :loss                        loss/->loss-layer
+   :graves-lstm                 lstm/->graves-lstm
    :output                      output/->output-layer
    :rnn-loss                    loss/->rnn-loss-layer
    :rnn-output                  output/->rnn-output-layer})

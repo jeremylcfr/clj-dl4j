@@ -3,6 +3,10 @@
 A clojure wrapper around DL4J, a well-known Java ML library built
 upon ND4J (the "Java NumPy") and JavaCPP.
 
+## "Development" branch (devel) notes
+
+While `master` branch is not considered as released, the difference with `devel` is that the latter is considered as experimental with WIP changes, i.e. with local work before seing the "big picture" of a feature. Therefore, while `master` work will probably stay somewhat the same, the `devel` will likely be refactored and volatile. You can play with it but do not expect stability. Plus, you have top build it by installing other versions locally (these versions are not deployed on Clojars).
+
 ## Note
 
 This library is at early stages of development and is so highly subject to future
@@ -29,16 +33,19 @@ Then, include :
 [jeremylcfr/clj-dl4j "0.1.0-SNAPSHOT"]
 ```
 
-You can theoritically use CUDA but I never tested it personnaly. For that, you
-just have to include :
+You can use the library with Nvidia CUDA for GPU acceleration, for that you just have to add :
 
 ```clojure
-[org.deeplearning4j/deeplearning4j-cuda-{{CUDA_VERSION}} "1.0.0-beta6"]
+[org.nd4j/nd4j-cuda-{{CUDA_VERSION}}-platform "1.0.0-M2.1"]
 ```
 
-with `{{CUDA_VERSION}}` from `9.2` to `10.2` included.
+with `{{CUDA_VERSION}}` set to the actual one (for instance 11.6).
+I have never tested it in Linux, but in WIndows you have to install CUDA on your computer (from the Nvidia website) and
+then restart. Using `lein repl`, this should use your GPU instead of your CPU. 
+
 In that case, this library works the same (in theory again) with some optional
-parameters you can use. See DL4J doc.
+parameters you can use. Small networks/datasets like the ones under `examples` will probably be slower because of the overhead (tested with a RTX 4090).
+See DL4J doc.
 
 ### Building a network - the XOR example
 

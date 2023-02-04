@@ -7,7 +7,9 @@
                  [org.clojure/algo.generic "0.1.3"]
                  [io.github.jeremylcfr/clj-nd4j "0.1.0-SNAPSHOT"]
                  [io.github.jeremylcfr/clj-datavec "0.1.0-SNAPSHOT"]
-                 [org.deeplearning4j/deeplearning4j-core "1.0.0-M2.1"]]
+                 [org.deeplearning4j/deeplearning4j-core "1.0.0-M2.1"]
+                 
+                 [org.nd4j/nd4j-cuda-11.6-platform "1.0.0-M2.1"]]
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
   :profiles {:dev {:source-paths ["repl"]}}

@@ -1,8 +1,9 @@
 (ns clj-dl4j.datasets
-  (:require [clj-datavec.records.csv :as csv]
+  (:require [clj-datavec.records :as records]
+            [clj-datavec.records.csv :as csv]
             [clj-datavec.records.jackson :as jackson])
-  (:import [org.deeplearning4j.datasets.datavec RecordReaderDataSetIterator]
-           [org.datavec.api.records.reader RecordReader]
+  (:import [org.deeplearning4j.datasets.datavec RecordReaderDataSetIterator SequenceRecordReaderDataSetIterator]
+           [org.datavec.api.records.reader RecordReader SequenceRecordReader]
            [org.nd4j.linalg.dataset DataSet]))
 
 (defn- infer-type-from-options
@@ -97,3 +98,37 @@
   ([input-type options io-coercible]
    (read-from-dataset-iterator
      (->record-reader-dataset-iterator input-type options io-coercible))))
+
+
+;; SequenceRecordReaderDataSetIterator (SequenceRecordReader featuresReader, SequenceRecordReader labels, int miniBatchSize, int numPossibleLabels)
+;; SequenceRecordReaderDataSetIterator (SequenceRecordReader featuresReader, SequenceRecordReader labels, int miniBatchSize, int numPossibleLabels, boolean regression)
+;; SequenceRecordReaderDataSetIterator (SequenceRecordReader featuresReader, SequenceRecordReader labels, int miniBatchSize, int numPossibleLabels, boolean regression, AlignmentMode alignmentMode)
+;; SequenceRecordReaderDataSetIterator (SequenceRecordReader reader, int miniBatchSize, int numPossibleLabels, int labelIndex)
+;; SequenceRecordReaderDataSetIterator (SequenceRecordReader reader, int miniBatchSize, int numPossibleLabels, int labelIndex, boolean regression)
+ 
+(def sequence-formats
+  {:csv {:indexed? true
+         :reader-fn csv/->csv-sequence-record-reader}})
+
+(defn ->sequence-record-reader-dataset-iterator-impl
+  ^SequenceRecordReaderDataSetIterator
+  ([{:keys [mini-batch-size nb-possible-labels label-idx regression] :or {regression false} :as options} ^SequenceRecordReader reader]
+   (SequenceRecordReaderDataSetIterator. reader ^int (int mini-batch-size) ^int (int nb-possible-labels) ^int (int label-idx) ^boolean (boolean regression))))
+   
+(defn ->sequence-record-reader-dataset-iterator
+  ^SequenceRecordReaderDataSetIterator
+  ([{:keys [input-type] :as options}]
+   (let [input-type (get conversions input-type input-type)
+         {:keys [reader-fn]} (get sequence-formats input-type)
+         reader (records/initialize (reader-fn options) options)]
+     (if reader 
+       (->sequence-record-reader-dataset-iterator-impl options reader)
+       (throw (Exception. (str "No record reader specification found for type : " input-type ", this might be unavailable in this library"))))))
+   ([{:keys [features labels input-type] :as options} features-reader labels-reader]))
+    
+       
+         
+         
+         
+         
+   
