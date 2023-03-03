@@ -3,9 +3,19 @@
             [clj-dl4j.datasets :as datasets]
             [clj-datavec.records.csv :as csv]
             [clj-datavec.records :as records]
+            [clj-nd4j.ndarray :as nda]
             [clj-nd4j.dataset.normalization :as norm])
-  
-  (:import [org.deeplearning4j.eval RegressionEvaluation])
+
+  (:import [org.deeplearning4j.eval RegressionEvaluation]
+
+           [org.nd4j.linalg.api.ndarray INDArray]
+
+
+           [org.jfree.chart ChartFactory ChartPanel JFreeChart]
+           [org.jfree.chart.axis NumberAxis]
+           [org.jfree.chart.plot XYPlot PlotOrientation]
+           [org.jfree.data.xy XYSeries XYSeriesCollection]
+           [org.jfree.ui RefineryUtilities])
   )
 
 ;; {:keys [mini-batch-size nb-possible-labels label-idx regression] :or {regression false} :as options}
@@ -22,16 +32,15 @@
    :nb-possible-labels -1
    :label-idx 1
    :regression true
-   :split {:type :numbered-file 
+   :split {:type :numbered-file
            :min-idx 0
            :max-idx 0}})
-   
+
 
 ;; num-to-skip
 (defn build-dataset-iterator
   [type-fn]
-  (let [dataset-iterator (datasets/->sequence-record-reader-dataset-iterator  (update dataset-options :path-template type-fn))]
-    dataset-iterator))
+  (datasets/->sequence-record-reader-dataset-iterator  (update dataset-options :path-template type-fn)))
 
 (defn build-dataset
   [type-fn]
@@ -64,24 +73,36 @@
              :loss-fn        :mse
              :n-in           10
              :n-out          1}]
-   :training-listener {:type         :score-iteration
+   :training-listener {:type           :score-iteration
                        :nb-iterations  20}})
+
+(defn create-plot-series
+  ^XYSeriesCollection
+  ([features offset plot-name]
+   (create-plot-series features offset plot-name (XYSeriesCollection.)))
+  ([^INDArray features offset ^String plot-name ^XYSeriesCollection series-collection]
+   (let [nb-rows (aget (nda/get-shape features) 2)
+         series (XYSeries. plot-name)]
+     (doseq [i (range nb-rows)]
+       (.add ^XYSeries series ^int (int (+ offset i))))
+     series-collection)))
+
 
 (defn run!
   []
   (let [train-dataset (build-dataset :train)
         test-dataset  (build-dataset :test)
-        
+
         normalizer (-> (build-normalizer)
                        (norm/fit-dataset train-dataset)
                        )
         _ (norm/transform! normalizer train-dataset)
         _ (norm/transform! normalizer test-dataset)
-        
+
         ;; replace
         test-features (.getFeatures test-dataset)
         test-labels (.getLabels test-dataset)
-        
+
         network (core/multi-layer-network network-configuration)]
     (dotimes [k 300]
       (.fit network train-dataset)
@@ -89,13 +110,13 @@
             predicted (.output network test-features, false)]
         (.evalTimeSeries evaluation test-labels predicted)
         (println (.stats evaluation))))))
-            
-                       
-                       
-        
-        
-  
-  
+
+
+
+
+
+
+
 
 
 

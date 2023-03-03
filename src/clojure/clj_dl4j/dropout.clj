@@ -30,11 +30,11 @@
   (SpatialDropout. ^double (double probability)))
 
 (def dropouts
-  {:standard standard-dropout
-   :alpha alpha-dropout
-   :gaussian gaussian-dropout
+  {:standard       standard-dropout
+   :alpha          alpha-dropout
+   :gaussian       gaussian-dropout
    :gaussian-noise gaussian-noise
-   :spatial spatial-dropout})
+   :spatial        spatial-dropout})
 
 (defn dropout
   ^IDropout

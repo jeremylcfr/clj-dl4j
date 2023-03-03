@@ -4,15 +4,15 @@
            [org.nd4j.linalg.learning.config IUpdater]))
 
 (def updaters
-  {:sgd Updater/SGD
-   :adam Updater/ADAM
-   :adamax Updater/ADAMAX
-   :adadelta Updater/ADADELTA
-   :nesterovs Updater/NESTEROVS
-   :nadam Updater/NADAM
-   :adagrad Updater/ADAGRAD
-   :rmsprop Updater/RMSPROP
-   :none Updater/NONE})
+  {:sgd        Updater/SGD
+   :adam       Updater/ADAM
+   :adamax     Updater/ADAMAX
+   :adadelta   Updater/ADADELTA
+   :nesterovs  Updater/NESTEROVS
+   :nadam      Updater/NADAM
+   :adagrad    Updater/ADAGRAD
+   :rmsprop    Updater/RMSPROP
+   :none       Updater/NONE})
 
 (defn updater?
   [obj]
