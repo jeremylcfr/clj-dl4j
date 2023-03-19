@@ -151,7 +151,7 @@
 (defn single-builder
   ^NeuralNetConfiguration$Builder
   [{:keys [;; Meta
-           mini-batch workspace-usage backprop-type tbptt-forward-length tbptt-backward-length cache-mode goal-type
+           mini-batch workspace-usage cache-mode goal-type
            seed optimization-agorithm
            ;; Layer, if single layer
            layer
@@ -173,9 +173,6 @@
   (cond-> (NeuralNetConfiguration$Builder.)
           (boolean? mini-batch)                                          (.miniBatch ^NeuralNetConfiguration$Builder mini-batch)
           (or (boolean? workspace-usage) (keyword? workspace-usage))     (set-workspace-usage! workspace-usage)
-          backprop-type                                                  (.backpropType ^NeuralNetConfiguration$Builder (->backprop-type backprop-type))
-          tbptt-forward-length                                           (.tBPTTForwardLength ^NeuralNetConfiguration$Builder ^int (int tbptt-forward-length))
-          tbptt-backward-length                                          (.tBPTTBackwardLength ^NeuralNetConfiguration$Builder ^int (int tbptt-backward-length))
           cache-mode                                                     (.cacheMode ^NeuralNetConfiguration$Builder (->cache-mode cache-mode))
           goal-type                                                      (set-goal-type! goal-type)
           seed                                                           (.seed ^NeuralNetConfiguration$Builder ^long (long seed))
@@ -201,15 +198,24 @@
           constraints                                                    (add-constraints constraints)))
 
 
+(defn add-layers
+  [^NeuralNetConfiguration$ListBuilder builder layers]
+  (reduce-kv
+    (fn [acc idx layer]
+      (.layer ^NeuralNetConfiguration$ListBuilder acc ^int (int idx) ^Layer (layers/->layer layer)))
+   builder layers))
+
 (defn multi-builder
   ^NeuralNetConfiguration$ListBuilder
-  [{:keys [with-backprop? with-pretrain? layers]}
+  [{:keys [with-backprop? with-pretrain? backprop-type tbptt-forward-length tbptt-backward-length layers]}
    ^NeuralNetConfiguration$Builder builder]
   (let [list-builder (.list ^NeuralNetConfiguration builder)]
-    (reduce-kv
-      (fn [acc idx layer]
-        (.layer ^NeuralNetConfiguration$ListBuilder acc ^int (int idx) ^Layer (layers/->layer layer)))
-      list-builder layers)))
+    (cond-> list-builder 
+            backprop-type                         (.backpropType ^NeuralNetConfiguration$ListBuilder (->backprop-type backprop-type))
+            tbptt-forward-length                  (.tBPTTForwardLength ^NeuralNetConfiguration$ListBuilder ^int (int tbptt-forward-length))
+            tbptt-backward-length                 (.tBPTTBackwardLength ^NeuralNetConfiguration$ListBuilder ^int (int tbptt-backward-length))
+            layers                                (add-layers layers))))
+          
 
 ;; Warn on layer and layers
 (defn network-configuration-builder
