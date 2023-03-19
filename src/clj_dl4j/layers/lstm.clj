@@ -1,6 +1,46 @@
 (ns clj-dl4j.layers.lstm
   (:require [clj-dl4j.layers.supertypes.lstm :as super])
-  (:import [org.deeplearning4j.nn.conf.layers GravesLSTM GravesLSTM$Builder]))
+  (:import [org.deeplearning4j.nn.conf.layers LSTM LSTM$Builder GravesLSTM GravesLSTM$Builder]))
+
+;; Too much redundancy
+;; Build is for super, refactor
+
+(defn lstm-builder
+  ^LSTM$Builder
+  ([]
+   (LSTM$Builder.))
+  ([options]
+   (let [builder (lstm-builder)]
+     (super/build-with options builder))))
+
+(defn lstm-builder?
+  [obj]
+  (instance? LSTM$Builder obj))
+
+(defn ->lstm-builder
+  ^LSTM$Builder
+  [obj]
+  (if (lstm-builder? obj)
+    obj
+    (lstm-builder obj)))
+
+(defn lstm
+  ^LSTM
+  [options]
+  (.build ^LSTM$Builder (->lstm-builder options)))
+
+(defn lstm?
+  [obj]
+  (instance? LSTM obj))
+
+(defn ->lstm
+  ^LSTM
+  [obj]
+  (if (lstm? obj)
+    obj
+    (lstm obj)))
+
+
 
 (defn graves-lstm-builder
   ^GravesLSTM$Builder

@@ -17,6 +17,7 @@
    :dense                       dense/->dense-layer
    :dropout                     dropout/->dropout-layer
    :loss                        loss/->loss-layer
+   :lstm                        lstm/->lstm
    :graves-lstm                 lstm/->graves-lstm
    :output                      output/->output-layer
    :rnn-loss                    loss/->rnn-loss-layer

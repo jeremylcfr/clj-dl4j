@@ -14,6 +14,7 @@
                                        NeuralNetConfiguration$ListBuilder
                                        MultiLayerConfiguration
                                        MultiLayerConfiguration$Builder
+                                       BackpropType
                                        CacheMode
                                        WorkspaceMode
                                        Updater
@@ -37,6 +38,25 @@
         :inference (do (.trainingWorkspaceMode ^NeuralNetConfiguration$Builder builder WorkspaceMode/NONE) (.inferenceWorkspaceMode ^NeuralNetConfiguration$Builder builder WorkspaceMode/ENABLED))
         true (set-workspace-usage! builder :all)
         false builder))
+
+(defn backprop-type
+  ^BackpropType
+  [type]
+  (case type
+        :standard         BackpropType/Standard
+        :truncated-bptt   BackpropType/TruncatedBPTT
+        (throw (Exception. (str "Unknown backpropagation type : " type)))))
+
+(defn backprop-type?
+  [obj]
+  (instance? BackpropType obj))
+
+(defn ->backprop-type
+  ^BackpropType
+  [obj]
+  (if (backprop-type? obj)
+    obj
+    (backprop-type obj)))
 
 (defn cache-mode
   ^CacheMode
@@ -131,7 +151,7 @@
 (defn single-builder
   ^NeuralNetConfiguration$Builder
   [{:keys [;; Meta
-           mini-batch workspace-usage cache-mode goal-type
+           mini-batch workspace-usage backprop-type tbptt-forward-length tbptt-backward-length cache-mode goal-type
            seed optimization-agorithm
            ;; Layer, if single layer
            layer
@@ -153,6 +173,9 @@
   (cond-> (NeuralNetConfiguration$Builder.)
           (boolean? mini-batch)                                          (.miniBatch ^NeuralNetConfiguration$Builder mini-batch)
           (or (boolean? workspace-usage) (keyword? workspace-usage))     (set-workspace-usage! workspace-usage)
+          backprop-type                                                  (.backpropType ^NeuralNetConfiguration$Builder (->backprop-type backprop-type))
+          tbptt-forward-length                                           (.tBPTTForwardLength ^NeuralNetConfiguration$Builder ^int (int tbptt-forward-length))
+          tbptt-backward-length                                          (.tBPTTBackwardLength ^NeuralNetConfiguration$Builder ^int (int tbptt-backward-length))
           cache-mode                                                     (.cacheMode ^NeuralNetConfiguration$Builder (->cache-mode cache-mode))
           goal-type                                                      (set-goal-type! goal-type)
           seed                                                           (.seed ^NeuralNetConfiguration$Builder ^long (long seed))
